@@ -91,3 +91,7 @@ Game::Game()
 {
 
 }
+void Game::quit()
+{
+	m_bRunning = false;
+}
