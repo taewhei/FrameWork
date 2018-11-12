@@ -11,6 +11,8 @@ public:
 	virtual void update();
 	virtual void clean();
 
+	friend class CollisionManager;
+	friend class Game;
 protected:
 
 	int m_width;

@@ -20,8 +20,11 @@ public:
 	void update();
 	bool running() { return m_bRunning; }
 	SDL_Renderer* getRenderer() const { return m_pRenderer; }
-	void quit();std::vector<GameObject*> m_gameObjects;SDL_Renderer* m_pRenderer;
+	void quit();
+	std::vector<GameObject*> m_gameObjects;
+
 private:
+	SDL_Renderer* m_pRenderer;
 	SDL_Window * m_pWindow;
 	
 	bool m_bRunning;

@@ -24,25 +24,26 @@ public:
 	void clean();  // 디바이스 관련 초기화된 부분을 clear 
 	
 	bool isKeyDown(SDL_Scancode key);
-	bool isKeyUp(SDL_Scancode key);
+	int isKeyOneDown(SDL_Scancode key);
 	~InputHandler() {}
 						
 	bool getMouseButtonState(int buttonNumber);
 	Vector2D* getMousePosition();
-	
+	int push = 0;
 private:
 	const Uint8* m_keystates;
 	static InputHandler* s_pInstance;
 	std::vector<bool> m_mouseButtonStates;
 	Vector2D* m_mousePosition;
-	bool isDownBefore=false;
+
 	//SDL_Event event;
-	
+
+	void onKeyDown();
+	void onKeyUp();
 	InputHandler();
 	void onMouseMove(SDL_Event event);
 	void onMouseButtonDown(SDL_Event event);
 	void onMouseButtonUp(SDL_Event event);
-	void onKeyDown();
-	void onKeyUp();
+	int pushsec;
 };
 typedef InputHandler TheInputHandler;

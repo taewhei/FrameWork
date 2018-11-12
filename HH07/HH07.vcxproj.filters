@@ -48,6 +48,9 @@
     <ClInclude Include="Wall.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="CollisionManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InputHandler.cpp">
@@ -75,6 +78,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Wall.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

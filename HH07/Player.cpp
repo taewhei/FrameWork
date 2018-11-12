@@ -41,7 +41,7 @@ void Player::handleInput()
 	{
 		m_velocity.setY(2);
 	}
-	if (TheInputHandler::Instance()->isKeyUp(SDL_SCANCODE_SPACE))
+	if ((TheInputHandler::Instance()->isKeyOneDown(SDL_SCANCODE_SPACE)==1))
 	{
 		TheGame::Instance()->m_gameObjects.push_back(new Bullet(new LoaderParams(m_position.getX() + 128, m_position.getY() + 41, 30, 30, "Bullet")));
 	}

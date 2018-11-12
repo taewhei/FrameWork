@@ -42,9 +42,11 @@ void InputHandler::update()
 			break;
 		case SDL_KEYDOWN:
 			onKeyDown();
+
 			break;
 		case SDL_KEYUP:
 			onKeyUp();
+	
 			break;
 		default:
 			break;
@@ -68,22 +70,27 @@ bool InputHandler::isKeyDown(SDL_Scancode key)
 
 	return false;
 }
-bool InputHandler::isKeyUp(SDL_Scancode key)
+int InputHandler::isKeyOneDown(SDL_Scancode key)
 {
 	if (m_keystates != 0) {
 		if (m_keystates[key] == 1)
 		{
-
-			return true;
+			if (push == 2)
+				push = 2;
+			else
+				push++;
+			return push;
 		}
 		else {
-
-			return false;
+			push = 0;
+			return push;
 		}
 	}
-
-	return false;
+	push = 0;
+	return push;
 }
+
+
 bool InputHandler::getMouseButtonState(int buttonNumber)
 {
 	return m_mouseButtonStates[buttonNumber];
@@ -136,5 +143,6 @@ void InputHandler::onKeyDown()
 void InputHandler::onKeyUp()
 {
 	m_keystates = SDL_GetKeyboardState(0);
+
 }
 

@@ -1,15 +1,20 @@
-#pragma once
-#include"SDLGameObject.h"
+#include "Wall.h"
+#include "InputHandler.h"
+#include "Game.h"
 
-class Wall : public SDLGameObject
+Wall::Wall(const LoaderParams* pParams) : SDLGameObject(pParams)
 {
-private:
+}
+void Wall::draw()
+{
+	SDLGameObject::draw(); // we now use SDLGameObject
+}
+void Wall::update()
+{
+	m_currentFrame = int(((SDL_GetTicks() / 100) % 1));
+	SDLGameObject::update();
+}
 
-
-public:
-	Wall(const LoaderParams* pParams);
-	virtual void draw();
-	virtual void update();
-	virtual void clean();
-};
-
+void Wall::clean()
+{
+}
