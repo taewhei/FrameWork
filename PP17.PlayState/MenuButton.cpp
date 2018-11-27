@@ -1,17 +1,18 @@
 #include "MenuButton.h"
 #include"InputHandler.h"
-MenuButton::MenuButton(const LoaderParams* pParams) : SDLGameObject(pParams), m_callback(NULL)
-{
-}
-MenuButton::MenuButton(const LoaderParams* pParams, void(*callback)()) : SDLGameObject(pParams), m_callback(callback)
-{
-}
-
 void MenuButton::draw()
 {
 	SDLGameObject::draw(); // use the base class drawing
 }
 
+
+void MenuButton::clean()
+{
+	SDLGameObject::clean();
+}
+MenuButton::MenuButton(const LoaderParams* pParams) : SDLGameObject(pParams)
+{
+}
 
 void MenuButton::update()
 {
@@ -37,8 +38,6 @@ void MenuButton::update()
 }
 
 
-void MenuButton::clean()
+MenuButton::MenuButton(const LoaderParams* pParams, void(*callback)()) : SDLGameObject(pParams), m_callback(callback)
 {
-	SDLGameObject::clean();
 }
-

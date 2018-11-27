@@ -20,9 +20,12 @@ public:
 		return s_pInstance;
 	}
 private:
+	// call back functions for menu items
+	static void s_menuToPlay();
+	static void s_exitFromMenu();
+
 	std::vector<GameObject*> m_gameObjects;
 	static const std::string s_menuID;
 	static MenuState* s_pInstance;
-	static void s_menuToPlay();
-	static void s_exitFromMenu();
+	
 }; typedef MenuState MenuState;
