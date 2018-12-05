@@ -13,9 +13,10 @@ public:
 	Vector2D& getPosition() { return m_position; }
 	int getWidth() { return m_width; }
 	int getHeight() { return m_height; }
-
+	friend class PlayState;
+	friend class Body;
 protected:
-
+	double angle = 0;
 	int m_width;
 	int m_height;
 	int m_currentRow;

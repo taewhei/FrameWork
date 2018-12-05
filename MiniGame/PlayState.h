@@ -1,5 +1,6 @@
 #include "GameState.h"
 #include"SDLGameObject.h"
+
 class PlayState : public GameState
 {
 public:
@@ -19,10 +20,12 @@ public:
 		return s_pInstance;
 	}
 	bool checkCollision(SDLGameObject* p1, SDLGameObject* p2);
-
+		std::vector<GameObject*> m_gameObjects;
+		std::vector<GameObject*> food;
+		int eat;
 private:
 	static const std::string s_playID;
 	static PlayState* s_pInstance;
-	std::vector<GameObject*> m_gameObjects;
+
 
 }; typedef PlayState PlayState;

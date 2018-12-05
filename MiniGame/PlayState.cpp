@@ -6,26 +6,69 @@
 #include"GameOverState.h"
 #include"InputHandler.h"
 #include"PauseState.h"
+#include"Body.h"
+#include"SDLGameObject.h"
+#include"Food.h"
 const std::string PlayState::s_playID = "PLAY";
 PlayState* PlayState::s_pInstance = 0;
 void PlayState::update()
 {
+	for (int i = 1; i < m_gameObjects.size(); i++)
+	{
+	if (checkCollision(
+		dynamic_cast<SDLGameObject*>(m_gameObjects[i]),
+		dynamic_cast<SDLGameObject*>(m_gameObjects[i-1])))
+		{
+		((Body*)m_gameObjects[i])->IsCollision = true;
+		}
+	else
+		{
+		((Body*)m_gameObjects[i])->IsCollision = false;
+		}
+	}
+
+
+	for (int j = 0; j < food.size(); j++)
+	{
+		if (checkCollision(
+			dynamic_cast<SDLGameObject*>(m_gameObjects[0]),
+			dynamic_cast<SDLGameObject*>(food[j])))
+		{
+			((Food*)food[j])->IsCollision = true;
+			eat += 1;
+		}
+		else
+		{
+			((Food*)food[j])->IsCollision = false;
+		}
+	}
+	
 	
 	for (int i = 0; i < m_gameObjects.size(); i++) {
+	
+		if (((SDLGameObject*)m_gameObjects[i])->m_textureID == "Body")
+		{
+			((Body*)m_gameObjects[i])->target = (SDLGameObject*)m_gameObjects[i-1];
+		}
 		m_gameObjects[i]->update();
+	
 	}
-	if (checkCollision(
-		dynamic_cast<SDLGameObject*>(m_gameObjects[0]),
-		dynamic_cast<SDLGameObject*>(m_gameObjects[1])))
+	for (int i = 0; i < food.size(); i++) {
+
+		food[i]->update();
+	}
+	if (eat == 3)
 	{
-		TheGame::Instance()->getStateMachine()->changeState(
-			GameOverState::Instance());
+		m_gameObjects.push_back(new Body(
+			new LoaderParams(0,0,32, 32, "Body")));
+		eat = 0;
 	}
 	if (TheInputHandler::Instance()->isKeyDown(SDL_SCANCODE_ESCAPE))
 	{
 		TheGame::Instance()->getStateMachine()->changeState(
 			PauseState::Instance());
 	}
+
 }
 
 
@@ -34,24 +77,45 @@ void PlayState::render()
 	for (int i = 0; i < m_gameObjects.size(); i++)
 	{
 		m_gameObjects[i]->draw();
+		
+	}
+	for (int i = 0; i < food.size(); i++) {
+
+		food[i]->draw();
 	}
 }
 bool PlayState::onEnter()
 {
 	if (!TheTextureManager::Instance()->load("assets/Head.png",
-		"helicopter", TheGame::Instance()->getRenderer())) {
+		"Head", TheGame::Instance()->getRenderer())) {
 		return false;
 	}
-	if (!TheTextureManager::Instance()->load("assets/helicopter2.png",
-		"helicopter2", TheGame::Instance()->getRenderer())) {
+	if (!TheTextureManager::Instance()->load("assets/Body.png",
+		"Body", TheGame::Instance()->getRenderer())) {
 		return false;
 	}
+	if (!TheTextureManager::Instance()->load("assets/Food.png",
+		"Food", TheGame::Instance()->getRenderer())) {
+		return false;
+	}
+	
 	GameObject* player = new Player(
-		new LoaderParams(500, 100, 32, 32, "helicopter"));
-	GameObject* enemy = new Enemy(
-		new LoaderParams(100, 100, 128, 55, "helicopter2"));
+		new LoaderParams(400, 100, 32, 32, "Head"));
+	GameObject* body = new Body(
+		new LoaderParams(300, 100, 32, 32, "Body"));
+	GameObject* body2 = new Body(
+		new LoaderParams(200, 100, 32, 32, "Body"));
+	GameObject* body3 = new Body(
+		new LoaderParams(100, 100, 32, 32, "Body"));
+	GameObject* Food1 = new Food(
+		new LoaderParams(400, 100, 16, 16, "Food"));
+	
 	m_gameObjects.push_back(player);
-	m_gameObjects.push_back(enemy);
+	m_gameObjects.push_back(body);
+	m_gameObjects.push_back(body2);
+	m_gameObjects.push_back(body3);
+	
+	food.push_back(Food1);
 	std::cout << "entering PlayState\n";
 	return true;
 }
@@ -61,10 +125,17 @@ bool PlayState::onExit()
 	for (int i = 0; i < m_gameObjects.size(); i++)
 	{
 		m_gameObjects[i]->clean();
+
+	}
+	for (int i = 0; i < food.size(); i++) {
+
+		food[i]->clean();
 	}
 	m_gameObjects.clear();
+	food.clear();
 
-	TheTextureManager::Instance()->clearFromTextureMap("helicopter");
+	TheTextureManager::Instance()->clearFromTextureMap("Head");
+	TheTextureManager::Instance()->clearFromTextureMap("Body");
 	std::cout << "exiting PlayState\n";
 	return true;
 }

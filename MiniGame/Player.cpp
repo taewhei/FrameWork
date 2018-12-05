@@ -23,11 +23,12 @@ void Player::handleInput()
 {
 	Vector2D* target = TheInputHandler::Instance()->getMousePosition();
 	m_velocity = *target - m_position;
-	m_velocity /= 50;
+	m_velocity /= 10;
+	angle = lookAt(*target);
 }
 double Player:: lookAt(Vector2D target)
 {
 	Vector2D directrion = m_position - target;
-	angle = atan2(directrion.getY(),directrion.getX());
+	angle = (atan2(directrion.getY(), directrion.getX()) - M_PI/2.F) * 180.f / M_PI;
 	return angle;
 }
