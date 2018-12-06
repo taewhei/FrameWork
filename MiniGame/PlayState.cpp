@@ -67,13 +67,23 @@ void PlayState::update()
 				return;
 			}
 		}
-		
+		for (int i = 1; i < m_gameObjects.size(); i++)
+		{
+			if (i == m_gameObjects.size()-1)
+			{
+			((SDLGameObject*)m_gameObjects[i])->m_textureID = "Tail";
+			}
+			else
+			{
+			((SDLGameObject*)m_gameObjects[i])->m_textureID = "Body";
+			}
+		}
 	}
 	
 	
 	for (int i = 0; i < m_gameObjects.size(); i++) {
 	
-		if (((SDLGameObject*)m_gameObjects[i])->m_textureID == "Body")
+		if (((SDLGameObject*)m_gameObjects[i])->m_textureID == "Body"|| ((SDLGameObject*)m_gameObjects[i])->m_textureID == "Tail")
 		{
 			((Body*)m_gameObjects[i])->target = (SDLGameObject*)m_gameObjects[i-1];
 		}
@@ -87,7 +97,7 @@ void PlayState::update()
 	if (eat == 3)
 	{
 		m_gameObjects.push_back(new Body(
-			new LoaderParams(0,0,32, 32, "Body")));
+			new LoaderParams(0,0,24, 24, "Tail")));
 		eat = 0;
 	}
 	if (TheInputHandler::Instance()->isKeyDown(SDL_SCANCODE_ESCAPE))
@@ -125,15 +135,19 @@ bool PlayState::onEnter()
 		"Food", TheGame::Instance()->getRenderer())) {
 		return false;
 	}
+	if (!TheTextureManager::Instance()->load("assets/Tail.png",
+		"Tail", TheGame::Instance()->getRenderer())) {
+		return false;
+	}
 	
 	GameObject* player = new Player(
-		new LoaderParams(400, 100, 32, 32, "Head"));
+		new LoaderParams(400, 100, 24, 24, "Head"));
 	GameObject* body = new Body(
-		new LoaderParams(300, 100, 32, 32, "Body"));
+		new LoaderParams(300, 100, 24, 24, "Body"));
 	GameObject* body2 = new Body(
-		new LoaderParams(200, 100, 32, 32, "Body"));
+		new LoaderParams(200, 100, 24, 24, "Body"));
 	GameObject* body3 = new Body(
-		new LoaderParams(100, 100, 32, 32, "Body"));
+		new LoaderParams(100, 100, 24, 24, "Tail"));
 	GameObject* Food1 = new Food(
 		new LoaderParams(400, 100, 16, 16, "Food"));
 	
@@ -163,6 +177,7 @@ bool PlayState::onExit()
 
 	TheTextureManager::Instance()->clearFromTextureMap("Head");
 	TheTextureManager::Instance()->clearFromTextureMap("Body");
+	TheTextureManager::Instance()->clearFromTextureMap("Tail");
 	std::cout << "exiting PlayState\n";
 	return true;
 }

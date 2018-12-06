@@ -47,7 +47,7 @@ bool GameOverState::onEnter()
 	{
 		return false;
 	}
-	if (!TheTextureManager::Instance()->load("Assets/main.png",
+	if (!TheTextureManager::Instance()->load("Assets/restart.png",
 		"restartbutton", TheGame::Instance()->getRenderer()))
 	{
 		return false;
