@@ -42,6 +42,33 @@ void PlayState::update()
 			((Food*)food[j])->IsCollision = false;
 		}
 	}
+
+	for (int i = 0; i < m_gameObjects.size()-1; i++)
+	{
+		for (int j = i - 2; j > 0; j--)
+		{
+			if (checkCollision(
+			dynamic_cast<SDLGameObject*>(m_gameObjects[i]),
+			dynamic_cast<SDLGameObject*>(m_gameObjects[j])))
+			{
+				TheGame::Instance()->getStateMachine()->changeState(
+					GameOverState::Instance());
+				return;
+			}
+		}
+		for (int z = i + 2; z < m_gameObjects.size() - 1; z++)
+		{
+			if (checkCollision(
+				dynamic_cast<SDLGameObject*>(m_gameObjects[i]),
+				dynamic_cast<SDLGameObject*>(m_gameObjects[z])))
+			{
+				TheGame::Instance()->getStateMachine()->changeState(
+					GameOverState::Instance());
+				return;
+			}
+		}
+		
+	}
 	
 	
 	for (int i = 0; i < m_gameObjects.size(); i++) {
