@@ -12,7 +12,8 @@
 const std::string PlayState::s_playID = "PLAY";
 PlayState* PlayState::s_pInstance = 0;
 void PlayState::update()
-{
+{	
+	
 	for (int i = 1; i < m_gameObjects.size(); i++)
 	{
 	if (checkCollision(
@@ -27,7 +28,7 @@ void PlayState::update()
 		}
 	}
 
-
+	
 	for (int j = 0; j < food.size(); j++)
 	{
 		if (checkCollision(
@@ -35,21 +36,29 @@ void PlayState::update()
 			dynamic_cast<SDLGameObject*>(food[j])))
 		{
 			((Food*)food[j])->IsCollision = true;
-			eat += 1;
+			if (((Food*)food[j])->m_textureID == "Food")
+			{
+				eat += 1;
+			}
+			else if (((Food*)food[j])->m_textureID == "Birus")
+			{
+				minuseat += 1;
+			}
+			
 		}
 		else
 		{
 			((Food*)food[j])->IsCollision = false;
 		}
 	}
-
-	for (int i = 0; i < m_gameObjects.size()-1; i++)
+	
+	for (int i = 0; i < m_gameObjects.size() - 1; i++)
 	{
 		for (int j = i - 2; j > 0; j--)
 		{
 			if (checkCollision(
-			dynamic_cast<SDLGameObject*>(m_gameObjects[i]),
-			dynamic_cast<SDLGameObject*>(m_gameObjects[j])))
+				dynamic_cast<SDLGameObject*>(m_gameObjects[i]),
+				dynamic_cast<SDLGameObject*>(m_gameObjects[j])))
 			{
 				TheGame::Instance()->getStateMachine()->changeState(
 					GameOverState::Instance());
@@ -69,18 +78,44 @@ void PlayState::update()
 		}
 		for (int i = 1; i < m_gameObjects.size(); i++)
 		{
-			if (i == m_gameObjects.size()-1)
+			if (i == m_gameObjects.size() - 1)
 			{
-			((SDLGameObject*)m_gameObjects[i])->m_textureID = "Tail";
+				((SDLGameObject*)m_gameObjects[i])->m_textureID = "Tail";
+				if (eat >= 5)
+				{
+
+					m_gameObjects.push_back(new Body(new LoaderParams(((SDLGameObject*)m_gameObjects[i])->getPosition().getX(),
+						((SDLGameObject*)m_gameObjects[i])->getPosition().getY(), 24, 24, "Tail")));
+					eat = 0;
+				}
+				if (minuseat >= 5)
+				{
+					std::vector<GameObject*>::iterator iter = m_gameObjects.begin();
+					std::vector<GameObject*>::iterator iterEnd = m_gameObjects.end();
+
+					for (; iter != iterEnd; iter++)
+					{
+						if (*iter == m_gameObjects[i])
+						{
+							m_gameObjects.erase(iter);
+
+							break;
+						}
+					}
+					minuseat = 0;
+				}
+				
 			}
 			else
 			{
-			((SDLGameObject*)m_gameObjects[i])->m_textureID = "Body";
+				((SDLGameObject*)m_gameObjects[i])->m_textureID = "Body";
 			}
 		}
+
 	}
+
 	
-	
+
 	for (int i = 0; i < m_gameObjects.size(); i++) {
 	
 		if (((SDLGameObject*)m_gameObjects[i])->m_textureID == "Body"|| ((SDLGameObject*)m_gameObjects[i])->m_textureID == "Tail")
@@ -94,18 +129,37 @@ void PlayState::update()
 
 		food[i]->update();
 	}
-	if (eat == 3)
+
+	for (int i = 0; i < m_gameObjects.size(); i++)
 	{
-		m_gameObjects.push_back(new Body(
-			new LoaderParams(0,0,24, 24, "Tail")));
-		eat = 0;
+		for (int j = 0; j < food.size(); j++)
+		{
+			if (((Food*)food[j])->m_textureID == "Bomb"|| ((Food*)food[j])->m_textureID == "SuperBomb")
+			{
+				if (checkCollision(
+					dynamic_cast<SDLGameObject*>(m_gameObjects[i]),
+					dynamic_cast<SDLGameObject*>(food[j])))
+				{
+					TheGame::Instance()->getStateMachine()->changeState(
+						GameOverState::Instance());
+					return;
+				}
+			}
+
+		}
 	}
 	if (TheInputHandler::Instance()->isKeyDown(SDL_SCANCODE_ESCAPE))
 	{
 		TheGame::Instance()->getStateMachine()->changeState(
 			PauseState::Instance());
+		return;
 	}
-
+	if (1 == m_gameObjects.size())
+	{
+		TheGame::Instance()->getStateMachine()->changeState(
+			GameOverState::Instance());
+		return;
+	}
 }
 
 
@@ -131,15 +185,30 @@ bool PlayState::onEnter()
 		"Body", TheGame::Instance()->getRenderer())) {
 		return false;
 	}
-	if (!TheTextureManager::Instance()->load("assets/Food.png",
-		"Food", TheGame::Instance()->getRenderer())) {
-		return false;
-	}
 	if (!TheTextureManager::Instance()->load("assets/Tail.png",
 		"Tail", TheGame::Instance()->getRenderer())) {
 		return false;
 	}
 	
+
+	if (!TheTextureManager::Instance()->load("assets/Food.png",
+		"Food", TheGame::Instance()->getRenderer())) {
+		return false;
+	}
+	if (!TheTextureManager::Instance()->load("assets/Birus.png",
+		"Birus", TheGame::Instance()->getRenderer())) {
+		return false;
+	}
+	if (!TheTextureManager::Instance()->load("assets/Bomb.png",
+		"Bomb", TheGame::Instance()->getRenderer())) {
+		return false;
+	}
+	if (!TheTextureManager::Instance()->load("assets/SuperBomb.png",
+		"SuperBomb", TheGame::Instance()->getRenderer())) {
+		return false;
+	}
+
+
 	GameObject* player = new Player(
 		new LoaderParams(400, 100, 24, 24, "Head"));
 	GameObject* body = new Body(
@@ -148,15 +217,28 @@ bool PlayState::onEnter()
 		new LoaderParams(200, 100, 24, 24, "Body"));
 	GameObject* body3 = new Body(
 		new LoaderParams(100, 100, 24, 24, "Tail"));
-	GameObject* Food1 = new Food(
-		new LoaderParams(400, 100, 16, 16, "Food"));
 	
 	m_gameObjects.push_back(player);
 	m_gameObjects.push_back(body);
 	m_gameObjects.push_back(body2);
 	m_gameObjects.push_back(body3);
 	
-	food.push_back(Food1);
+	
+	for (int i = 0; i < 280; i++)
+	{
+		food.push_back(new Food(
+			new LoaderParams(rand() % 600 + 20, rand() % 430 + 20, 16, 16, "Birus")));
+	}
+
+	for (int i=0; i < 300; i++)
+	{
+		food.push_back(new Food(
+			new LoaderParams(rand() % 600 + 20, rand() % 430 + 20, 16, 16, "Food")));
+	}
+
+	food.push_back(new Food(new LoaderParams(30, 430, 32, 32, "Bomb")));
+	food.push_back(new Food(new LoaderParams(450, 430, 32, 32, "SuperBomb")));
+	food.push_back(new Food(new LoaderParams(200, 430, 32, 32, "Bomb")));
 	std::cout << "entering PlayState\n";
 	return true;
 }

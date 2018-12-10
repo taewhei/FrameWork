@@ -27,7 +27,7 @@ void Body::handleInput()
 	if (IsCollision == false)
 	{
 	m_velocity = vector - m_position;
-	m_velocity /= 10;
+	m_velocity /= 5;
 	}
 	else
 	{

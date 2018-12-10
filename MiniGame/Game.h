@@ -24,7 +24,6 @@ public:
 	SDL_Renderer* getRenderer() const { return m_pRenderer; }
 	void quit();
 	GameStateMachine* getStateMachine() { return m_pGameStateMachine; }
-
 private:
 	SDL_Window * m_pWindow;
 	SDL_Renderer* m_pRenderer;

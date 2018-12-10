@@ -23,6 +23,8 @@ public:
 		std::vector<GameObject*> m_gameObjects;
 		std::vector<GameObject*> food;
 		int eat;
+		int minuseat;
+		int score;
 private:
 	static const std::string s_playID;
 	static PlayState* s_pInstance;

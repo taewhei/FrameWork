@@ -9,9 +9,10 @@ int main(int argc, char* argv[])
 
 	Uint32 frameStart, frameTime;
 	std::cout << "game init attempt...\n";
-	if (TheGame::Instance()->init("Chapter 1", 100, 100, 640, 480, false))
+	if (TheGame::Instance()->init("Long Worm", 100, 100, 640, 480, false))
 	{
 		std::cout << "game init success!\n";
+		
 	}
 	else {
 		std::cout << "game init failure - " << SDL_GetError() << "\n";
