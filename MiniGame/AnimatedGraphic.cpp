@@ -14,4 +14,4 @@ void AnimatedGraphic::update()
 void AnimatedGraphic::draw()
 {
 	SDLGameObject::draw();
-}//dd
+}

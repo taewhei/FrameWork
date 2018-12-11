@@ -9,12 +9,13 @@
 #include"Body.h"
 #include"SDLGameObject.h"
 #include"Food.h"
+#include"BackGround.h"
 const std::string PlayState::s_playID = "PLAY";
 PlayState* PlayState::s_pInstance = 0;
 void PlayState::update()
 {	
 	
-	for (int i = 1; i < m_gameObjects.size(); i++)
+	for (int i = 2; i < m_gameObjects.size(); i++)
 	{
 	if (checkCollision(
 		dynamic_cast<SDLGameObject*>(m_gameObjects[i]),
@@ -32,7 +33,7 @@ void PlayState::update()
 	for (int j = 0; j < food.size(); j++)
 	{
 		if (checkCollision(
-			dynamic_cast<SDLGameObject*>(m_gameObjects[0]),
+			dynamic_cast<SDLGameObject*>(m_gameObjects[1]),
 			dynamic_cast<SDLGameObject*>(food[j])))
 		{
 			((Food*)food[j])->IsCollision = true;
@@ -52,7 +53,7 @@ void PlayState::update()
 		}
 	}
 	
-	for (int i = 0; i < m_gameObjects.size() - 1; i++)
+	for (int i = 1; i < m_gameObjects.size() - 1; i++)
 	{
 		for (int j = i - 2; j > 0; j--)
 		{
@@ -76,47 +77,47 @@ void PlayState::update()
 				return;
 			}
 		}
-		for (int i = 1; i < m_gameObjects.size(); i++)
-		{
-			if (i == m_gameObjects.size() - 1)
-			{
-				((SDLGameObject*)m_gameObjects[i])->m_textureID = "Tail";
-				if (eat >= 5)
-				{
-
-					m_gameObjects.push_back(new Body(new LoaderParams(((SDLGameObject*)m_gameObjects[i])->getPosition().getX(),
-						((SDLGameObject*)m_gameObjects[i])->getPosition().getY(), 24, 24, "Tail")));
-					eat = 0;
-				}
-				if (minuseat >= 5)
-				{
-					std::vector<GameObject*>::iterator iter = m_gameObjects.begin();
-					std::vector<GameObject*>::iterator iterEnd = m_gameObjects.end();
-
-					for (; iter != iterEnd; iter++)
-					{
-						if (*iter == m_gameObjects[i])
-						{
-							m_gameObjects.erase(iter);
-
-							break;
-						}
-					}
-					minuseat = 0;
-				}
-				
-			}
-			else
-			{
-				((SDLGameObject*)m_gameObjects[i])->m_textureID = "Body";
-			}
-		}
-
+		
 	}
+	for (int i = 2; i < m_gameObjects.size(); i++)
+			{
+				if (i == m_gameObjects.size() - 1)
+				{
+					((SDLGameObject*)m_gameObjects[i])->m_textureID = "Tail";
+					if (eat >= 5)
+					{
+	
+						m_gameObjects.push_back(new Body(new LoaderParams(((SDLGameObject*)m_gameObjects[i])->getPosition().getX(),
+							((SDLGameObject*)m_gameObjects[i])->getPosition().getY(), 24, 24, "Tail")));
+						eat = 0;
+					}
+					if (minuseat >= 5)
+					{
+						std::vector<GameObject*>::iterator iter = m_gameObjects.begin();
+						std::vector<GameObject*>::iterator iterEnd = m_gameObjects.end();
+	
+						for (; iter != iterEnd; iter++)
+						{
+							if (*iter == m_gameObjects[i])
+							{
+								m_gameObjects.erase(iter);
+	
+								break;
+							}
+						}
+						minuseat = 0;
+					}
+					
+				}
+				else
+				{
+					((SDLGameObject*)m_gameObjects[i])->m_textureID = "Body";
+				}
+			}
 
 	
 
-	for (int i = 0; i < m_gameObjects.size(); i++) {
+	for (int i = 1; i < m_gameObjects.size(); i++) {
 	
 		if (((SDLGameObject*)m_gameObjects[i])->m_textureID == "Body"|| ((SDLGameObject*)m_gameObjects[i])->m_textureID == "Tail")
 		{
@@ -130,7 +131,7 @@ void PlayState::update()
 		food[i]->update();
 	}
 
-	for (int i = 0; i < m_gameObjects.size(); i++)
+	for (int i = 1; i < m_gameObjects.size(); i++)
 	{
 		for (int j = 0; j < food.size(); j++)
 		{
@@ -154,7 +155,7 @@ void PlayState::update()
 			PauseState::Instance());
 		return;
 	}
-	if (1 == m_gameObjects.size())
+	if (2 == m_gameObjects.size())
 	{
 		TheGame::Instance()->getStateMachine()->changeState(
 			GameOverState::Instance());
@@ -207,8 +208,13 @@ bool PlayState::onEnter()
 		"SuperBomb", TheGame::Instance()->getRenderer())) {
 		return false;
 	}
+	if (!TheTextureManager::Instance()->load("assets/Grass.png",
+		"Grass", TheGame::Instance()->getRenderer())) {
+		return false;
+	}
 
-
+	GameObject* grass = new BackGround(
+		new LoaderParams(0, 0, 640, 480, "Grass"));
 	GameObject* player = new Player(
 		new LoaderParams(400, 100, 24, 24, "Head"));
 	GameObject* body = new Body(
@@ -217,7 +223,8 @@ bool PlayState::onEnter()
 		new LoaderParams(200, 100, 24, 24, "Body"));
 	GameObject* body3 = new Body(
 		new LoaderParams(100, 100, 24, 24, "Tail"));
-	
+
+	m_gameObjects.push_back(grass);
 	m_gameObjects.push_back(player);
 	m_gameObjects.push_back(body);
 	m_gameObjects.push_back(body2);
